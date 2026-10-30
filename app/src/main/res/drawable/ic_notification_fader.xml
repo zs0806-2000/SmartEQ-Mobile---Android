@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Status bar notification icon. Per Android's notification-icon
+  requirements, this MUST be a flat white silhouette on a transparent
+  background — the system applies its own tint, any color info here is
+  ignored (and older OS versions render solid color as a white box if you
+  don't follow this rule, hence the plain white fill).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFF">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M6,3a1,1 0,0 1,1 1v6a1,1 0,0 1,-2 0V4a1,1 0,0 1,1 -1zM6,14a1,1 0,0 1,1 1v6a1,1 0,0 1,-2 0v-6a1,1 0,0 1,1 -1zM5,10.5a1.5,1.5 0,1 1,0 3a1.5,1.5 0,0 1,0 -3zM12,3a1,1 0,0 1,1 1v2a1,1 0,0 1,-2 0V4a1,1 0,0 1,1 -1zM12,10a1,1 0,0 1,1 1v9a1,1 0,0 1,-2 0v-9a1,1 0,0 1,1 -1zM11,6.5a1.5,1.5 0,1 1,0 3a1.5,1.5 0,0 1,0 -3zM18,3a1,1 0,0 1,1 1v9a1,1 0,0 1,-2 0V4a1,1 0,0 1,1 -1zM18,16a1,1 0,0 1,1 1v3a1,1 0,0 1,-2 0v-3a1,1 0,0 1,1 -1zM17,13.5a1.5,1.5 0,1 1,0 3a1.5,1.5 0,0 1,0 -3z" />
+</vector>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ============================================================
+         PERMISSIONS — every entry below is used for a specific,
+         disclosed feature. None are speculative/"just in case."
+         See ui/help for the in-app, plain-language explanation of
+         each one that is surfaced during onboarding.
+         ============================================================ -->
+
+    <!-- Required to run the always-on EQ engine as a foreground service. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+
+    <!-- Normal permission (auto-granted, no runtime prompt). Lets the app
+         create/configure audio effects (DynamicsProcessing, Visualizer). -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- Required (Android 13+) to show the persistent EQ-engine-status
+         notification that the foreground service must display while active. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Required so the EQ engine keeps running after the device reboots,
+         if the user has enabled "Resume on boot" in Settings. Optional
+         feature, off by default; permission is inert unless that setting
+         is on. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Only used when the user explicitly enables the optional Gemini
+         AI-tuning feature or the optional Spotify integration, both off by
+         default and independently toggleable in Settings > Web Connections. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Biometric App Lock (fingerprint / face / device PIN-pattern-password
+         fallback). Does not grant access to biometric data itself — Android
+         handles matching in a Trusted Execution Environment and only
+         reports success/failure to the app. -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- Explicitly NOT requested, on purpose:
+         - RECORD_AUDIO: the EQ engine attaches to the system audio-effect
+           chain (DynamicsProcessing/Visualizer); it does not capture or
+           record audio content from any app, including itself.
+         - Notification-listener / usage-access: not needed for Spotify
+           "now playing" data — that comes from Spotify's own Web API once
+           the user explicitly signs in. -->
+
+    <application
+        android:name=".SmartEqApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SmartEQPro"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="35">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.SmartEQPro.Splash"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Spotify PKCE OAuth redirect. No client secret is ever
+                 embedded in this app; only a Client ID the user supplies
+                 themselves in Settings (see SPOTIFY_SETUP.md). -->
+            <intent-filter android:autoVerify="false">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="smarteqpro" android:host="spotify-callback" />
+            </intent-filter>
+        </activity>
+
+        <!-- ========================================================
+             The real-time system-wide EQ engine. FOREGROUND_SERVICE_TYPE
+             specialUse is the correct category per Android's own guidance
+             ("when other types don't cover your use case") — real-time
+             audio-effect processing on other apps' playback doesn't fit
+             mediaPlayback (we don't play media ourselves) or
+             mediaProcessing (that type is capped at 6 hrs/24 hrs and is
+             meant for file transcoding, not indefinite real-time effects).
+             ======================================================== -->
+        <service
+            android:name=".service.EqualizerForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Applies the user's real-time equalizer and dynamics settings to currently playing audio system-wide, similar to a hardware EQ. Must run continuously while enabled so audio processing is not interrupted." />
+        </service>
+
+        <!-- Receives ACTION_OPEN/CLOSE_AUDIO_EFFECT_CONTROL_SESSION from
+             other media/music apps (the official Android mechanism
+             third-party equalizers use) so we know which audio session to
+             attach the effect to. Exported because other apps send these
+             as implicit broadcasts to any registered receiver. -->
+        <receiver
+            android:name=".receiver.AudioSessionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION" />
+                <action android:name="android.media.action.CLOSE_AUDIO_EFFECT_CONTROL_SESSION" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Optional: restarts the EQ engine after reboot, only if the
+             user turned on Settings > "Resume equalizer on boot". -->
+        <receiver
+            android:name=".receiver.BootCompletedReceiver"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Listener Service to detect active song/artist from Spotify, YouTube, Apple Music, and local audio players -->
+        <service
+            android:name=".service.MediaSessionListenerService"
+            android:label="@string/media_session_listener_label"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>

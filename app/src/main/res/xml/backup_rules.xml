@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Explicitly EXCLUDES anything security-sensitive from Android's
+  cloud/Auto Backup so a compromised backup can never leak a Gemini key,
+  Spotify token, or App Lock PIN. Only preset data (harmless EQ numbers)
+  is eligible for backup.
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" path="secure_prefs.xml" />
+    <exclude domain="sharedpref" path="app_lock_prefs.xml" />
+    <exclude domain="database" path="smarteq_presets.db" />
+</full-backup-content>

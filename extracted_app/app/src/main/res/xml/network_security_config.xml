@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Blocks cleartext (unencrypted HTTP) traffic app-wide. SmartEQ Pro only
+  ever talks to two endpoints (Google's Gemini API, Spotify's Web API),
+  both HTTPS-only, and both individually toggleable in Settings.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

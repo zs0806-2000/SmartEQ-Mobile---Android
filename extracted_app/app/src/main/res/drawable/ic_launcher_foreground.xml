@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  App icon foreground: a Material-style sound-system fader bank — three
+  vertical slider tracks with rounded thumb caps at different heights
+  (per project direction: "Material design icon that looks like a fader
+  for a sound system"). Placeholder until a final brand logo is
+  workshopped and approved; kept simple/geometric/single-metaphor per
+  current Material iconography guidance.
+  All content is kept within the 66dp x 66dp adaptive-icon safe zone
+  (centered within the 108dp x 108dp canvas) so it isn't clipped by
+  whichever mask shape (circle, squircle, rounded square) the OEM launcher
+  applies.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Track 1 (left) -->
+    <path
+        android:pathData="M33,27 L33,81"
+        android:strokeColor="#4D000000"
+        android:strokeWidth="5"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M33,27 L33,81"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.35" />
+    <!-- Thumb: lower position -->
+    <path
+        android:pathData="M24,62 L42,62"
+        android:strokeColor="#06B6D4"
+        android:strokeWidth="8"
+        android:strokeLineCap="round" />
+
+    <!-- Track 2 (center, tallest thumb) -->
+    <path
+        android:pathData="M54,27 L54,81"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.35" />
+    <!-- Thumb: upper position -->
+    <path
+        android:pathData="M45,38 L63,38"
+        android:strokeColor="#A855F7"
+        android:strokeWidth="8"
+        android:strokeLineCap="round" />
+
+    <!-- Track 3 (right) -->
+    <path
+        android:pathData="M75,27 L75,81"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.35" />
+    <!-- Thumb: mid position -->
+    <path
+        android:pathData="M66,50 L84,50"
+        android:strokeColor="#EC4899"
+        android:strokeWidth="8"
+        android:strokeLineCap="round" />
+
+</vector>

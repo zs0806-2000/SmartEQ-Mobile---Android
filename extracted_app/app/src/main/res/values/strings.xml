@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartEQ Pro</string>
+    <string name="app_tagline">Intelligent Audio Mastering</string>
+
+    <!-- Navigation -->
+    <string name="nav_equalizer">Equalizer</string>
+    <string name="nav_autotune">Auto-Tune</string>
+    <string name="nav_presets">Presets</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Foreground service notification -->
+    <string name="fgs_notification_channel_name">EQ Engine Status</string>
+    <string name="fgs_notification_channel_desc">Shows when SmartEQ Pro is actively processing system audio</string>
+    <string name="fgs_notification_title_active">SmartEQ Pro is active</string>
+    <string name="fgs_notification_text_processing">Equalizing: %1$s</string>
+    <string name="fgs_notification_text_idle">Waiting for audio to play</string>
+    <string name="fgs_notification_action_disable">Turn off</string>
+
+    <!-- Equalizer screen -->
+    <string name="eq_title">System-Wide Equalizer</string>
+    <string name="eq_engine_off">Engine Off</string>
+    <string name="eq_engine_on">Engine On</string>
+    <string name="eq_mode_universal">Universal (All Audio)</string>
+    <string name="eq_mode_default">Default (Per-App)</string>
+    <string name="eq_mode_legacy">Legacy (Global Mix)</string>
+    <string name="eq_status_universal_active">Universal mode active — equalizing all streaming media and downloaded files system-wide.</string>
+    <string name="eq_status_processing">Now equalizing: %1$s</string>
+    <string name="eq_status_idle">Waiting for audio playback.</string>
+    <string name="eq_status_legacy_active">Legacy mode active — applying to the device\'s global audio output.</string>
+    <string name="media_session_listener_label">SmartEQ Media Sync</string>
+    <string name="local_audio_title">Local &amp; Downloaded Audio</string>
+    <string name="local_audio_pick">Select Audio File</string>
+    <string name="eq_reset">Reset</string>
+    <string name="eq_bands_5">5</string>
+    <string name="eq_bands_10">10</string>
+    <string name="eq_bands_15">15</string>
+
+    <!-- Help copy — plain-language explanations, referenced by tooltips
+         and the full Help screen. Every user-facing feature has an entry
+         here per project requirements. -->
+    <string name="help_eq_mode_title">Default vs. Legacy processing mode</string>
+    <string name="help_eq_mode_body">"Default mode listens for a signal that well-behaved apps (like most music and podcast players) send when they start or stop playing audio, and attaches the equalizer to that specific app. It\'s the mode Google currently recommends and generally sounds identical to Legacy mode, with better battery life.\n\nLegacy mode instead attaches the equalizer to the phone\'s entire audio output at once. It can pick up audio from apps that don\'t send the signal Default mode listens for, but Google has marked this approach as outdated, and a small number of phones (mostly certain Samsung and Xiaomi models) don\'t allow it at all. If Default mode isn\'t picking up your audio, try Legacy mode — SmartEQ Pro will tell you plainly if it isn\'t working on your device."</string>
+
+    <string name="help_gemini_title">AI-assisted tuning (optional)</string>
+    <string name="help_gemini_body">"Typing an artist, song, or genre into \'Intelligent Auto-EQ\' can be handled two ways:\n\n• Without an API key: SmartEQ Pro uses its own built-in library of hand-tuned artist and genre profiles. This works fully offline-capable for network use — no data leaves your device for this feature.\n\n• With a Google Gemini API key: the app asks Gemini to generate a custom curve for exactly what you typed, which can be more precise for artists not in the built-in library. This sends the artist/song name and your headphone model to Google\'s Gemini API over an encrypted connection.\n\nThis is entirely optional. Nothing about the core equalizer, presets, or Auto-Tune requires it."</string>
+
+    <string name="help_spotify_title">Spotify integration (optional)</string>
+    <string name="help_spotify_body">"Connecting Spotify lets SmartEQ Pro read what track is currently playing (song title, artist, album art) so it can automatically suggest or apply a matching EQ preset. It does not let SmartEQ Pro control playback, see your password, or access anything beyond what\'s currently playing and your playlists.\n\nSmartEQ Pro does not receive Spotify\'s actual audio stream through this connection — if you want SmartEQ Pro to equalize Spotify\'s sound, that happens separately through the system-wide equalizer engine (see \'How system-wide processing works\'), which works whether or not you connect a Spotify account.\n\nYou can disconnect at any time in Settings; this immediately deletes the stored access token from this device."</string>
+
+    <string name="help_system_wide_title">How system-wide processing works</string>
+    <string name="help_system_wide_body">"SmartEQ Pro uses Android\'s built-in audio effects framework to insert your equalizer and dynamics settings into the audio path of other apps while they play — the same official mechanism used by other system-wide EQ apps. It does not record, capture, or store any audio content, and does not need microphone access to do this.\n\nCompatibility varies by source app and phone manufacturer, which is a limitation of Android itself rather than of this app. The status indicator on the Equalizer screen always tells you honestly whether a compatible session was found."</string>
+
+    <string name="help_app_lock_title">App Lock</string>
+    <string name="help_app_lock_body">"App Lock requires your fingerprint, face, or device PIN/pattern/password before SmartEQ Pro opens or returns from the background. It protects your saved presets and, if connected, your Spotify session from anyone else with access to your unlocked phone. SmartEQ Pro never sees or stores your biometric data itself — Android handles that matching privately and only tells the app pass or fail."</string>
+
+    <string name="help_dynamics_title">Bass, Treble &amp; Dynamics</string>
+    <string name="help_dynamics_body">"Bass and Treble apply a broad tonal tilt below ~150 Hz and above ~8 kHz. The Dynamics section (Threshold, Ratio, Attack, Release, Knee) is a compressor: it automatically narrows the gap between the quietest and loudest parts of what you\'re listening to. Lower thresholds and higher ratios compress harder; Attack/Release control how quickly it reacts."</string>
+
+    <!-- Auto-Tune screen -->
+    <string name="autotune_title">Artist &amp; Hardware Auto-Tuning</string>
+    <string name="autotune_toggle_label">Auto-Tune Sync</string>
+    <string name="autotune_trigger">Auto-Tune Equalizer Now</string>
+    <string name="autotune_calculating">Calculating Acoustic Curves…</string>
+    <string name="autotune_no_track">No active track detected.</string>
+    <string name="autotune_manual_search_hint">Or search artist manually</string>
+
+    <!-- Presets -->
+    <string name="presets_title">Presets</string>
+    <string name="presets_save">Save</string>
+    <string name="presets_empty">No saved presets yet.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_processing">Audio Processing</string>
+    <string name="settings_section_connections">Web Connections</string>
+    <string name="settings_section_security">Security</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_gemini_key_label">Gemini API Key</string>
+    <string name="settings_gemini_key_hint">Optional — leave blank to use the built-in local tuning library</string>
+    <string name="settings_gemini_enabled">Allow Gemini network calls</string>
+    <string name="settings_spotify_enabled">Allow Spotify network calls</string>
+    <string name="settings_spotify_connect">Connect Spotify</string>
+    <string name="settings_spotify_disconnect">Disconnect Spotify</string>
+    <string name="settings_resume_on_boot">Resume equalizer on boot</string>
+    <string name="settings_applock_enable">Require unlock to open app</string>
+    <string name="settings_applock_timeout">Lock after leaving app</string>
+
+    <!-- App Lock -->
+    <string name="lock_title">SmartEQ Pro is locked</string>
+    <string name="lock_prompt_subtitle">Unlock to continue</string>
+    <string name="lock_unlock_button">Unlock</string>
+    <string name="lock_biometric_title">Unlock SmartEQ Pro</string>
+    <string name="lock_biometric_subtitle">Use your fingerprint, face, or device PIN</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_permissions_title">Before we start</string>
+    <string name="onboarding_notification_rationale">SmartEQ Pro must show a persistent notification while the equalizer engine is running — this is an Android requirement for any app that processes audio continuously, not optional tracking.</string>
+</resources>
