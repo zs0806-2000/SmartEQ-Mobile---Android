@@ -119,7 +119,7 @@ fun SettingsScreen(
         SettingsSection(title = stringResource(R.string.settings_section_about)) {
             SettingsHelpRow(title = "Help & feature guide", onClick = { onNavigateToHelp("index") })
             Text(
-                "SmartEQ Pro v1.0.0",
+                "SmartyQ v1.0.0",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 8.dp),

@@ -90,7 +90,7 @@ fun AdaptiveTuningCard(
             OptionRow(
                 title = "Use track info",
                 body = "Notices when a new song starts in any app, including Spotify — no login needed. " +
-                    "Android calls this notification access; SmartEQ Pro reads only the song title, artist and app name.",
+                    "Android calls this notification access; SmartyQ reads only the song title, artist and app name.",
                 checked = state.useTrackInfo && state.notificationAccessGranted,
                 onChange = { on ->
                     if (on && !state.notificationAccessGranted) {

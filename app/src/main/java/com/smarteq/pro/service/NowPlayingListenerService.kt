@@ -102,7 +102,7 @@ class NowPlayingListenerService : NotificationListenerService() {
     companion object {
         private const val TAG = "NowPlayingListener"
 
-        /** True if the user has granted SmartEQ Pro notification access. */
+        /** True if the user has granted SmartyQ notification access. */
         fun isAccessGranted(context: Context): Boolean {
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as? android.app.NotificationManager ?: return false
             return nm.isNotificationListenerAccessGranted(ComponentName(context, NowPlayingListenerService::class.java))

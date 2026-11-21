@@ -1,5 +1,5 @@
 {
-  "name": "SmartEQ Pro",
+  "name": "SmartyQ",
   "description": "System-wide real-time audio equalizer, Auto-Tune DSP engine, and low-latency Bluetooth audio processor optimized for offline usage.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

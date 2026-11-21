@@ -165,7 +165,7 @@ class AdaptiveTuner(
                 phase = if (haveTrackInfo) AdaptivePhase.TRACK_INFO_ONLY else AdaptivePhase.UNAVAILABLE,
                 trackLabel = trackLabel, correction15 = hint, tracksLearned = profile.tracks, outputLabel = outputLabel,
                 note = when {
-                    c.listen -> "Allow Microphone access to let SmartEQ Pro analyse the sound."
+                    c.listen -> "Allow Microphone access to let SmartyQ analyse the sound."
                     !haveTrackInfo -> "Turn on track info or sound analysis to start adaptive tuning."
                     else -> null
                 },

@@ -45,7 +45,7 @@ fun OnboardingScreen(onFinished: () -> Unit) {
     ) {
         Icon(Icons.Default.Tune, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.height(56.dp))
         Spacer(Modifier.height(16.dp))
-        Text("Welcome to SmartEQ Pro", style = MaterialTheme.typography.headlineMedium)
+        Text("Welcome to SmartyQ", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(8.dp))
         Text(stringResource(R.string.onboarding_permissions_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(24.dp))
@@ -59,7 +59,7 @@ fun OnboardingScreen(onFinished: () -> Unit) {
         OnboardingItem(
             icon = Icons.Default.Shield,
             title = "Nothing is recorded",
-            body = "SmartEQ Pro applies audio effects through Android's own effects framework. It never captures, records, or stores audio content, and it doesn't need microphone access to work.",
+            body = "SmartyQ applies audio effects through Android's own effects framework. It never captures, records, or stores audio content, and it doesn't need microphone access to work.",
         )
 
         Spacer(Modifier.height(32.dp))

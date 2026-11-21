@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SmartEQ Pro</string>
+    <string name="app_name">SmartyQ</string>
     <string name="app_tagline">Intelligent Audio Mastering</string>
 
     <!-- Navigation -->
@@ -11,8 +11,8 @@
 
     <!-- Foreground service notification -->
     <string name="fgs_notification_channel_name">EQ Engine Status</string>
-    <string name="fgs_notification_channel_desc">Shows when SmartEQ Pro is actively processing system audio</string>
-    <string name="fgs_notification_title_active">SmartEQ Pro is active</string>
+    <string name="fgs_notification_channel_desc">Shows when SmartyQ is actively processing system audio</string>
+    <string name="fgs_notification_title_active">SmartyQ is active</string>
     <string name="fgs_notification_text_processing">Equalizing: %1$s</string>
     <string name="fgs_notification_text_idle">Waiting for audio to play</string>
     <string name="fgs_notification_action_disable">Turn off</string>
@@ -28,7 +28,7 @@
     <string name="eq_status_processing">Now equalizing: %1$s</string>
     <string name="eq_status_idle">Waiting for audio playback.</string>
     <string name="eq_status_legacy_active">Legacy mode active — applying to the device\'s global audio output.</string>
-    <string name="media_session_listener_label">SmartEQ Media Sync</string>
+    <string name="media_session_listener_label">SmartyQ Media Sync</string>
     <string name="local_audio_title">Local &amp; Downloaded Audio</string>
     <string name="local_audio_pick">Select Audio File</string>
     <string name="eq_reset">Reset</string>
@@ -40,19 +40,19 @@
          and the full Help screen. Every user-facing feature has an entry
          here per project requirements. -->
     <string name="help_eq_mode_title">Processing modes, and why some streaming apps aren\'t equalized</string>
-    <string name="help_eq_mode_body">"Android lets an equalizer reach another app\'s sound in two ways.\n\n• Per-app: a music or video app announces its audio stream when it starts playing, and SmartEQ Pro attaches to that stream. This is the method Google recommends and the one Poweramp Equalizer uses. It sounds clean because the EQ is applied once, to that app only.\n\n• Whole phone: the EQ is attached to the phone\'s combined output. Google has marked this as outdated; many phones ignore it or apply it unevenly.\n\nAutomatic (recommended) uses per-app streams whenever an app announces one, and the whole-phone method only while none has. It never runs both at once, because that would apply your EQ twice.\n\nSome streaming apps never announce their stream. In Spotify, turning on Settings > Playback > Equalizer or Audio settings may help; some apps cannot be reached at all without root. When that happens, the status line on the Equalizer screen says which apps are being equalized right now."</string>
+    <string name="help_eq_mode_body">"Android lets an equalizer reach another app\'s sound in two ways.\n\n• Per-app: a music or video app announces its audio stream when it starts playing, and SmartyQ attaches to that stream. This is the method Google recommends and the one Poweramp Equalizer uses. It sounds clean because the EQ is applied once, to that app only.\n\n• Whole phone: the EQ is attached to the phone\'s combined output. Google has marked this as outdated; many phones ignore it or apply it unevenly.\n\nAutomatic (recommended) uses per-app streams whenever an app announces one, and the whole-phone method only while none has. It never runs both at once, because that would apply your EQ twice.\n\nSome streaming apps never announce their stream. In Spotify, turning on Settings > Playback > Equalizer or Audio settings may help; some apps cannot be reached at all without root. When that happens, the status line on the Equalizer screen says which apps are being equalized right now."</string>
 
     <string name="help_gemini_title">AI-assisted tuning (optional)</string>
-    <string name="help_gemini_body">"Typing an artist, song, or genre into \'Intelligent Auto-EQ\' can be handled two ways:\n\n• Without an API key: SmartEQ Pro uses its own built-in library of hand-tuned artist and genre profiles. This works fully offline-capable for network use — no data leaves your device for this feature.\n\n• With a Google Gemini API key: the app asks Gemini to generate a custom curve for exactly what you typed, which can be more precise for artists not in the built-in library. This sends the artist/song name and your headphone model to Google\'s Gemini API over an encrypted connection.\n\nThis is entirely optional. Nothing about the core equalizer, presets, or Auto-Tune requires it."</string>
+    <string name="help_gemini_body">"Typing an artist, song, or genre into \'Intelligent Auto-EQ\' can be handled two ways:\n\n• Without an API key: SmartyQ uses its own built-in library of hand-tuned artist and genre profiles. This works fully offline-capable for network use — no data leaves your device for this feature.\n\n• With a Google Gemini API key: the app asks Gemini to generate a custom curve for exactly what you typed, which can be more precise for artists not in the built-in library. This sends the artist/song name and your headphone model to Google\'s Gemini API over an encrypted connection.\n\nThis is entirely optional. Nothing about the core equalizer, presets, or Auto-Tune requires it."</string>
 
     <string name="help_spotify_title">Spotify integration (optional)</string>
-    <string name="help_spotify_body">"You do not need to connect Spotify for SmartEQ Pro to equalize Spotify, or for adaptive tuning to follow Spotify songs. Equalizing happens through the system audio effects, and adaptive tuning learns which song is playing from Android\'s media controls (\'Use track info\').\n\nConnecting a Spotify account is optional and only lets the manual Auto-Tune screen read your current track from Spotify\'s servers. You can disconnect at any time in Settings, which deletes the stored token from this phone."</string>
+    <string name="help_spotify_body">"You do not need to connect Spotify for SmartyQ to equalize Spotify, or for adaptive tuning to follow Spotify songs. Equalizing happens through the system audio effects, and adaptive tuning learns which song is playing from Android\'s media controls (\'Use track info\').\n\nConnecting a Spotify account is optional and only lets the manual Auto-Tune screen read your current track from Spotify\'s servers. You can disconnect at any time in Settings, which deletes the stored token from this phone."</string>
 
     <string name="help_system_wide_title">How system-wide processing works</string>
-    <string name="help_system_wide_body">"SmartEQ Pro uses Android\'s built-in audio effects to insert your EQ into other apps\' sound while they play. The equalizer itself needs no microphone or notification access.\n\nOnly the optional adaptive tuning asks for more, and only when you switch on the option that needs it (see \'Adaptive per-track tuning\')."</string>
+    <string name="help_system_wide_body">"SmartyQ uses Android\'s built-in audio effects to insert your EQ into other apps\' sound while they play. The equalizer itself needs no microphone or notification access.\n\nOnly the optional adaptive tuning asks for more, and only when you switch on the option that needs it (see \'Adaptive per-track tuning\')."</string>
 
     <string name="help_app_lock_title">App Lock</string>
-    <string name="help_app_lock_body">"App Lock requires your fingerprint, face, or device PIN/pattern/password before SmartEQ Pro opens or returns from the background. It protects your saved presets and, if connected, your Spotify session from anyone else with access to your unlocked phone. SmartEQ Pro never sees or stores your biometric data itself — Android handles that matching privately and only tells the app pass or fail."</string>
+    <string name="help_app_lock_body">"App Lock requires your fingerprint, face, or device PIN/pattern/password before SmartyQ opens or returns from the background. It protects your saved presets and, if connected, your Spotify session from anyone else with access to your unlocked phone. SmartyQ never sees or stores your biometric data itself — Android handles that matching privately and only tells the app pass or fail."</string>
 
     <string name="help_dynamics_title">Bass, Treble &amp; Dynamics</string>
     <string name="help_dynamics_body">"Bass and Treble apply a broad tonal tilt below ~150 Hz and above ~8 kHz. The Dynamics section (Threshold, Ratio, Attack, Release, Knee) is a compressor: it automatically narrows the gap between the quietest and loudest parts of what you\'re listening to. Lower thresholds and higher ratios compress harder; Attack/Release control how quickly it reacts."</string>
@@ -87,10 +87,10 @@
     <string name="settings_applock_timeout">Lock after leaving app</string>
 
     <!-- App Lock -->
-    <string name="lock_title">SmartEQ Pro is locked</string>
+    <string name="lock_title">SmartyQ is locked</string>
     <string name="lock_prompt_subtitle">Unlock to continue</string>
     <string name="lock_unlock_button">Unlock</string>
-    <string name="lock_biometric_title">Unlock SmartEQ Pro</string>
+    <string name="lock_biometric_title">Unlock SmartyQ</string>
     <string name="lock_biometric_subtitle">Use your fingerprint, face, or device PIN</string>
 
     <!-- Bluetooth & Output Routing -->
@@ -106,9 +106,9 @@
 
     <!-- Onboarding -->
     <string name="onboarding_permissions_title">Before we start</string>
-    <string name="onboarding_notification_rationale">SmartEQ Pro must show a persistent notification while the equalizer engine is running — this is an Android requirement for any app that processes audio continuously, not optional tracking.</string>
+    <string name="onboarding_notification_rationale">SmartyQ must show a persistent notification while the equalizer engine is running — this is an Android requirement for any app that processes audio continuously, not optional tracking.</string>
     <string name="help_adaptive_title">Adaptive per-track tuning</string>
     <string name="help_adaptive_body">"What it does: every song is mixed and mastered differently. Some are thin, some are boomy, some are dull. Adaptive tuning measures each song\'s tonal balance and nudges it toward the balance of the music you usually play on the same headphones or speaker, so songs sound more consistent with each other. It is a separate layer on top of your own EQ, limited to 4 dB per band, and changes are faded in over about a second.\n\nHow to use it:\n1. Switch on Adapt to every track.\n2. Switch on Analyse the sound and allow the Microphone permission. Android puts the audio-analysis tool under that permission. The microphone is never turned on, and no audio is recorded, saved or sent anywhere.\n3. Optional: switch on Use track info and allow notification access on the screen that opens. This lets it notice the exact moment a new song starts in any app, including Spotify. It reads only the song title, artist and app name.\n4. Play music. About 13 seconds into each song the status changes to Tuned for this song.\n\nIt learns: the first few songs on each output change very little. After about ten songs it knows your usual sound. Forget what it learned starts over.\n\nStrength sets how far it corrects (60% is a good start). With only track info allowed, it applies a mild artist profile when the artist is in the built-in library. Without track info, it re-checks the sound every 25 seconds instead of per song.\n\nAll of this runs on your phone. Nothing is uploaded."</string>
     <string name="help_appearance_title">Appearance: theme and font</string>
-    <string name="help_appearance_body">"Theme decides whether SmartEQ Pro is light or dark. Match phone follows your phone\'s own dark-mode setting; Dark and Light keep the app one way regardless.\n\nFont changes the typeface used everywhere in the app. All eight fonts are built into the app, so switching is instant and never downloads anything. Each one shows a preview of a heading and the small numbers used on the faders, so you can pick the one that is easiest for you to read.\n\nThese settings only change how the app looks. They have no effect on the sound."</string>
+    <string name="help_appearance_body">"Theme decides whether SmartyQ is light or dark. Match phone follows your phone\'s own dark-mode setting; Dark and Light keep the app one way regardless.\n\nFont changes the typeface used everywhere in the app. All eight fonts are built into the app, so switching is instant and never downloads anything. Each one shows a preview of a heading and the small numbers used on the faders, so you can pick the one that is easiest for you to read.\n\nThese settings only change how the app looks. They have no effect on the sound."</string>
 </resources>

@@ -13,7 +13,7 @@ import java.security.SecureRandom
 import java.util.Base64
 
 /**
- * SmartEQ Pro's App Lock. Supports Biometric / device credential
+ * SmartyQ's App Lock. Supports Biometric / device credential
  * or in-app numeric PIN (salted SHA-256).
  */
 class AppLockManager(

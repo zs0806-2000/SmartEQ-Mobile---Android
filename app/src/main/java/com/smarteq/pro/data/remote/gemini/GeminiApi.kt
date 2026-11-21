@@ -11,11 +11,11 @@ import retrofit2.http.Query
 /**
  * Thin Retrofit interface over Google's Gemini "generateContent" REST
  * endpoint. Called directly from the device using a user-supplied API key
- * (see SecureKeyStore) — there is no SmartEQ Pro backend server in the
+ * (see SecureKeyStore) — there is no SmartyQ backend server in the
  * request path, matching the "no bundled secrets, no proxy required"
  * decision made for this build.
  *
- * NOTE ON MODEL NAME: the original SmartEQ Pro web app used
+ * NOTE ON MODEL NAME: the original SmartEQ Pro web app (now SmartyQ) used
  * "gemini-3-flash-preview". Preview model IDs are updated by Google over
  * time; GeminiModel.DEFAULT below is kept as a single named constant
  * (rather than scattered string literals) specifically so it's a one-line

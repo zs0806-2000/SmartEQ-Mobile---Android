@@ -1,4 +1,4 @@
-Fonts bundled in SmartEQ Pro. Each is licensed under the SIL Open Font License 1.1; full texts follow.
+Fonts bundled in SmartyQ. Each is licensed under the SIL Open Font License 1.1; full texts follow.
 
 ==== sora ====
 Copyright 2019 The Sora Project Authors (https://github.com/sora-xor/sora-font)
