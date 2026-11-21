@@ -1,6 +1,16 @@
 package com.smarteq.pro.ui.autotune
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import com.smarteq.pro.audio.adaptive.AdaptiveStatus
+import com.smarteq.pro.audio.adaptive.AdaptiveTuner
+import com.smarteq.pro.service.EqualizerForegroundService
+import com.smarteq.pro.service.NowPlayingListenerService
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.smarteq.pro.audio.engine.EqStateStore
@@ -25,9 +35,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class AutoTuneUiState(
-    val currentTrack: TrackMetadata? = TrackMetadata(
-        title = "Get Lucky", artist = "Daft Punk", album = "Random Access Memories", source = TrackSource.MANUAL
-    ),
+    val currentTrack: TrackMetadata? = null,
     val selectedAutoEqProfile: AutoEqProfile = AutoEqDatabase.PROFILES.first(),
     val autoTuneEnabled: Boolean = true,
     val isTuning: Boolean = false,
@@ -36,8 +44,22 @@ data class AutoTuneUiState(
     val spotifyConnected: Boolean = false,
 )
 
+/** Settings and live status for adaptive per-track tuning. */
+data class AdaptiveUiState(
+    val enabled: Boolean = false,
+    val useTrackInfo: Boolean = false,
+    val listen: Boolean = false,
+    val strength: Float = 0.6f,
+    val loudness: Boolean = false,
+    val notificationAccessGranted: Boolean = false,
+    val micGranted: Boolean = false,
+    val status: AdaptiveStatus = AdaptiveStatus(),
+)
+
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class AutoTuneViewModel(
+    private val appContext: android.content.Context,
+    private val adaptiveTuner: AdaptiveTuner,
     private val artistTuningRepository: ArtistTuningRepository,
     private val settingsRepository: SettingsRepository,
     private val spotifyRepository: SpotifyRepository,
@@ -50,6 +72,17 @@ class AutoTuneViewModel(
 
     private val _lastGeneratedResult = MutableStateFlow<CombinedTuningResult?>(null)
     val lastGeneratedResult: StateFlow<CombinedTuningResult?> = _lastGeneratedResult
+
+    private val _access = MutableStateFlow(false to false) // notification access, mic
+    val adaptiveState: StateFlow<AdaptiveUiState> = combine(
+        combine(
+            settingsRepository.adaptiveEnabled, settingsRepository.adaptiveUseTrackInfo,
+            settingsRepository.adaptiveListen, settingsRepository.adaptiveStrength, settingsRepository.adaptiveLoudness,
+        ) { e, t, l, st, ld -> AdaptiveUiState(e, t, l, st, ld) },
+        _access,
+        adaptiveTuner.status,
+    ) { base, (notif, mic), status -> base.copy(notificationAccessGranted = notif, micGranted = mic, status = status) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AdaptiveUiState())
 
     val quickArtists = ArtistSignatureLibrary.QUICK_ARTISTS
     val autoEqProfiles = AutoEqDatabase.PROFILES
@@ -76,6 +109,51 @@ class AutoTuneViewModel(
             }
             .onEach { track -> track?.let { setTrackFromExternalSource(it) } }
             .launchIn(viewModelScope)
+    }
+
+    /** Re-reads granted permissions; called whenever the screen resumes. */
+    fun refreshAccess() {
+        val notif = NowPlayingListenerService.isAccessGranted(appContext)
+        val mic = ContextCompat.checkSelfPermission(appContext, Manifest.permission.RECORD_AUDIO) ==
+            PackageManager.PERMISSION_GRANTED
+        val micChanged = mic && !_access.value.second
+        _access.value = notif to mic
+        if (micChanged) EqualizerForegroundService.refreshForegroundType(appContext)
+        // Turning a permission off in system settings also turns the matching option off here.
+        viewModelScope.launch {
+            if (!notif && settingsRepository.adaptiveUseTrackInfo.first()) settingsRepository.setAdaptiveUseTrackInfo(false)
+            if (!mic && settingsRepository.adaptiveListen.first()) settingsRepository.setAdaptiveListen(false)
+        }
+    }
+
+    fun setAdaptiveEnabled(v: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setAdaptiveEnabled(v)
+            if (v) EqualizerForegroundService.ensureStarted(appContext)
+        }
+    }
+
+    fun setAdaptiveUseTrackInfo(v: Boolean) {
+        viewModelScope.launch { settingsRepository.setAdaptiveUseTrackInfo(v) }
+    }
+
+    fun setAdaptiveListen(v: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setAdaptiveListen(v)
+            if (v) EqualizerForegroundService.refreshForegroundType(appContext)
+        }
+    }
+
+    fun setAdaptiveStrength(v: Float) {
+        viewModelScope.launch { settingsRepository.setAdaptiveStrength(v) }
+    }
+
+    fun setAdaptiveLoudness(v: Boolean) {
+        viewModelScope.launch { settingsRepository.setAdaptiveLoudness(v) }
+    }
+
+    fun resetAdaptiveLearning() {
+        adaptiveTuner.resetLearning()
     }
 
     fun loadLocalAudioFile(uri: android.net.Uri, displayName: String) {
@@ -110,7 +188,7 @@ class AutoTuneViewModel(
 
     fun triggerAutoTune() {
         val state = _uiState.value
-        val artist = state.currentTrack?.artist ?: "Daft Punk"
+        val artist = state.currentTrack?.artist ?: return
         val title = state.currentTrack?.title
         viewModelScope.launch {
             _uiState.update { it.copy(isTuning = true) }
@@ -133,6 +211,8 @@ class AutoTuneViewModel(
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return AutoTuneViewModel(
+                        container.appContext,
+                        container.adaptiveTuner,
                         container.artistTuningRepository,
                         container.settingsRepository,
                         container.spotifyRepository,

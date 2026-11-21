@@ -17,8 +17,9 @@ import kotlinx.coroutines.flow.update
 
 /**
  * Monitors the active audio output device (Bluetooth A2DP/LE, USB DAC,
- * Wired Headset, or Built-in Speakers) and coordinates low-latency Bluetooth
- * DSP processing modes to minimize audio-video sync delays.
+ * Wired Headset, or Built-in Speakers). "Low-latency" only switches the effect to
+ * Android's faster, lower-frequency-resolution variant; it cannot change the delay
+ * that Bluetooth itself adds, so no latency figure is claimed.
  */
 class AudioRoutingManager(
     private val context: Context,
@@ -29,7 +30,7 @@ class AudioRoutingManager(
     private val _currentOutputDevice = MutableStateFlow(AudioOutputDevice())
     val currentOutputDevice: StateFlow<AudioOutputDevice> = _currentOutputDevice.asStateFlow()
 
-    private val _lowLatencyModeEnabled = MutableStateFlow(true)
+    private val _lowLatencyModeEnabled = MutableStateFlow(false)
     val lowLatencyModeEnabled: StateFlow<Boolean> = _lowLatencyModeEnabled.asStateFlow()
 
     private var onRoutingChangedListener: ((AudioOutputDevice, Boolean) -> Unit)? = null
@@ -72,7 +73,6 @@ class AudioRoutingManager(
 
             val updated = selected.copy(
                 isLowLatencyActive = isLowLatency,
-                estimatedLatencyMs = if (isLowLatency) 3 else if (selected.isBluetooth) 40 else 8
             )
             _currentOutputDevice.update { updated }
             onRoutingChangedListener?.invoke(updated, isLowLatency)

@@ -44,15 +44,7 @@ class EqualizerForegroundService : Service() {
         // Notification channel MUST be created before startForeground on Android 8+
         createNotificationChannel()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(
-                NOTIFICATION_ID,
-                buildNotification(processing = false, label = null, device = null),
-                android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-            )
-        } else {
-            startForeground(NOTIFICATION_ID, buildNotification(processing = false, label = null, device = null))
-        }
+        promoteToForeground()
 
         settingsRepository.eqEngineMode
             .onEach { mode -> sessionRegistry.setMode(mode) }
@@ -61,6 +53,9 @@ class EqualizerForegroundService : Service() {
         settingsRepository.eqEngineEnabled
             .onEach { enabled -> if (!enabled) sessionRegistry.releaseAll() }
             .launchIn(serviceScope)
+
+        // Adaptive per-track tuning lives here so it keeps working while the app is closed.
+        app.container.adaptiveTuner.start()
 
         sessionRegistry.status
             .onEach { status ->
@@ -78,15 +73,42 @@ class EqualizerForegroundService : Service() {
             stopSelfCleanly()
             return START_NOT_STICKY
         }
+        if (intent?.action == ACTION_REFRESH_TYPE) promoteToForeground()
         return START_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? = null
 
     override fun onDestroy() {
+        (applicationContext as SmartEqApplication).container.adaptiveTuner.stop()
         sessionRegistry.releaseAll()
         serviceScope.cancel()
         super.onDestroy()
+    }
+
+    /**
+     * Declares the "microphone" foreground-service type only when the user has granted it for
+     * sound analysis; Android requires that for the Visualizer to keep working in the background.
+     * Android refuses that type when the app is in the background, so it falls back to
+     * specialUse only, and the app retries (ACTION_REFRESH_TYPE) next time it is opened.
+     */
+    private fun promoteToForeground() {
+        val notification = buildNotification(processing = false, label = null, device = null)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            startForeground(NOTIFICATION_ID, notification); return
+        }
+        val special = android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+        val micGranted = androidx.core.content.ContextCompat.checkSelfPermission(
+            this, android.Manifest.permission.RECORD_AUDIO,
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (micGranted) {
+            val ok = runCatching {
+                startForeground(NOTIFICATION_ID, notification,
+                    special or android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE)
+            }.isSuccess
+            if (ok) return
+        }
+        startForeground(NOTIFICATION_ID, notification, special)
     }
 
     private fun stopSelfCleanly() {
@@ -145,14 +167,22 @@ class EqualizerForegroundService : Service() {
         private const val CHANNEL_ID = "smarteq_engine_status"
         private const val NOTIFICATION_ID = 42
         private const val ACTION_STOP = "com.smarteq.pro.action.STOP_ENGINE"
+        private const val ACTION_REFRESH_TYPE = "com.smarteq.pro.action.REFRESH_FGS_TYPE"
+
+        /** Call from the visible app after the Microphone permission was granted. */
+        fun refreshForegroundType(context: Context) {
+            runCatching {
+                context.startForegroundService(
+                    Intent(context, EqualizerForegroundService::class.java).setAction(ACTION_REFRESH_TYPE)
+                )
+            }
+        }
 
         fun ensureStarted(context: Context) {
             val intent = Intent(context, EqualizerForegroundService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent)
-            } else {
-                context.startService(intent)
-            }
+            // Android 12+ may refuse a start from the background; never crash for it.
+            runCatching { context.startForegroundService(intent) }
+                .onFailure { android.util.Log.w("EqualizerService", "Could not start service", it) }
         }
 
         fun stop(context: Context) {

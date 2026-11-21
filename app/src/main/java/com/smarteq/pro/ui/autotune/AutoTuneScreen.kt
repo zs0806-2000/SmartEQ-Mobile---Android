@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.smarteq.pro.R
 import com.smarteq.pro.data.model.AutoEqProfile
 
@@ -58,6 +59,12 @@ fun AutoTuneScreen(
     viewModel: AutoTuneViewModel,
 ) {
     val state by viewModel.uiState.collectAsState()
+    val adaptive by viewModel.adaptiveState.collectAsState()
+    // Permissions can change in system settings while we are away; re-check on every return.
+    LifecycleResumeEffect(Unit) {
+        viewModel.refreshAccess()
+        onPauseOrDispose { }
+    }
     var manualArtist by remember { mutableStateOf("") }
     var manualTrack by remember { mutableStateOf("") }
 
@@ -77,6 +84,17 @@ fun AutoTuneScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        AdaptiveTuningCard(
+            state = adaptive,
+            onEnabled = viewModel::setAdaptiveEnabled,
+            onUseTrackInfo = viewModel::setAdaptiveUseTrackInfo,
+            onListen = viewModel::setAdaptiveListen,
+            onStrength = viewModel::setAdaptiveStrength,
+            onLoudness = viewModel::setAdaptiveLoudness,
+            onResetLearning = viewModel::resetAdaptiveLearning,
+            onHelp = { onNavigateToHelp("adaptive") },
+        )
+
         Card(shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(Modifier.padding(20.dp)) {
                 Row(

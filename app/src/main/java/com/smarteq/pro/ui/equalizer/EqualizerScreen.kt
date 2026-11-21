@@ -235,7 +235,7 @@ private fun AudioOutputDeviceCard(
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Text(
-                            text = if (lowLatencyActive) "⚡ Fast buffer active (<3ms filter latency)" else "Standard filter buffer",
+                            text = if (lowLatencyActive) "Faster, coarser processing. Doesn't change Bluetooth's own delay." else "Standard processing (best sound)",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

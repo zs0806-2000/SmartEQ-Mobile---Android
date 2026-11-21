@@ -31,6 +31,7 @@ import com.smarteq.pro.R
 private data class HelpEntry(val titleRes: Int, val bodyRes: Int)
 
 private val HELP_ENTRIES = mapOf(
+    "adaptive" to HelpEntry(R.string.help_adaptive_title, R.string.help_adaptive_body),
     "eq_mode" to HelpEntry(R.string.help_eq_mode_title, R.string.help_eq_mode_body),
     "gemini" to HelpEntry(R.string.help_gemini_title, R.string.help_gemini_body),
     "spotify" to HelpEntry(R.string.help_spotify_title, R.string.help_spotify_body),
