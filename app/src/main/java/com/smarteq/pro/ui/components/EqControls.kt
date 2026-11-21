@@ -1,6 +1,15 @@
 package com.smarteq.pro.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.setProgress
+import androidx.compose.ui.semantics.stateDescription
+import com.smarteq.pro.ui.theme.LocalPeach
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -29,9 +38,9 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
 
 /**
- * A vertical fader for a single EQ band. Drag anywhere on the track;
- * one-line semantics description makes it usable with TalkBack.
- * Mirrors VerticalSlider in the original web app's App.tsx.
+ * A vertical fader for a single EQ band. Drag anywhere on the track, or use TalkBack's
+ * adjust gestures (semantics progress range). The fill grows up or down from the 0 dB
+ * centre line; the knob carries a soft shadow and a ring in the band's colour.
  */
 @Composable
 fun EqBandFader(
@@ -43,7 +52,10 @@ fun EqBandFader(
     onChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val trackHeightDp = 176.dp
+    val trackHeight = 176.dp
+    val knob = 22.dp
+    val currentValue by rememberUpdatedState(value)
+    val t = LocalPeach.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier,
@@ -51,50 +63,75 @@ fun EqBandFader(
         Text(
             text = if (value > 0) "+${formatDb(value)}" else formatDb(value),
             style = MaterialTheme.typography.labelMedium,
-            color = color,
+            color = if (value == 0f) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
         )
         Box(
             modifier = Modifier
-                .padding(top = 8.dp, bottom = 8.dp)
-                .height(trackHeightDp)
-                .width(28.dp)
-                .semantics { contentDescription = "$label band, ${formatDb(value)} decibels" }
+                .padding(vertical = 8.dp)
+                .height(trackHeight + knob)
+                .width(32.dp)
+                .semantics {
+                    contentDescription = "$label band"
+                    stateDescription = "${formatDb(value)} decibels"
+                    progressBarRangeInfo = ProgressBarRangeInfo(value, min..max, steps = 0)
+                    setProgress { target ->
+                        onChange(target.coerceIn(min, max).roundToTenth()); true
+                    }
+                }
                 .pointerInput(min, max) {
                     detectVerticalDragGestures { change, _ ->
-                        val trackPx = size.height.toFloat()
-                        val relativeY = (change.position.y).coerceIn(0f, trackPx)
-                        val percentFromBottom = 1f - (relativeY / trackPx)
-                        val newValue = min + percentFromBottom * (max - min)
+                        val pad = knob.toPx() / 2f
+                        val trackPx = size.height - 2 * pad
+                        val y = (change.position.y - pad).coerceIn(0f, trackPx)
+                        val newValue = min + (1f - y / trackPx) * (max - min)
                         onChange(newValue.coerceIn(min, max).roundToTenth())
                     }
                 },
-            contentAlignment = Alignment.BottomCenter,
+            contentAlignment = Alignment.TopCenter,
         ) {
+            val frac = ((currentValue - min) / (max - min)).coerceIn(0f, 1f)
+            val knobTop = trackHeight * (1f - frac)          // knob centre offset from track top
+            val centre = trackHeight / 2
+            val fillTop = if (knobTop < centre) knobTop else centre
+            val fillHeight = if (knobTop < centre) centre - knobTop else knobTop - centre
             // Track
             Box(
-                modifier = Modifier
+                Modifier
+                    .padding(top = knob / 2)
                     .width(6.dp)
-                    .height(trackHeightDp)
-                    .clip(RoundedCornerShape(3.dp))
-                    .align(Alignment.Center)
-                    .then(Modifier)
-                    .background(Color.Black.copy(alpha = 0.35f))
+                    .height(trackHeight)
+                    .clip(CircleShape)
+                    .background(t.soft)
             )
-            val percent = ((value - min) / (max - min)).coerceIn(0f, 1f)
+            // 0 dB line
             Box(
-                modifier = Modifier
-                    .width(6.dp)
-                    .height(trackHeightDp * percent)
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(color)
+                Modifier
+                    .padding(top = knob / 2 + centre)
+                    .width(14.dp)
+                    .height(1.dp)
+                    .background(t.line)
             )
+            // Fill from the centre line, with a faint glow in the band colour
+            if (fillHeight > 0.dp) {
+                Box(
+                    Modifier
+                        .padding(top = knob / 2 + fillTop)
+                        .width(6.dp)
+                        .height(fillHeight)
+                        .shadow(6.dp, CircleShape, ambientColor = color, spotColor = color)
+                        .clip(CircleShape)
+                        .background(color)
+                )
+            }
+            // Knob
             Box(
-                modifier = Modifier
-                    .padding(bottom = (trackHeightDp * percent) - 6.dp)
-                    .width(24.dp)
-                    .height(12.dp)
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(color)
+                Modifier
+                    .padding(top = knobTop)
+                    .size(knob)
+                    .shadow(5.dp, CircleShape, ambientColor = Color.Black.copy(alpha = 0.4f), spotColor = Color.Black.copy(alpha = 0.4f))
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.onBackground)
+                    .border(3.dp, color, CircleShape)
             )
         }
         Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -118,22 +155,25 @@ fun EqKnob(
 ) {
     val percent = ((value - min) / (max - min)).coerceIn(0f, 1f)
     val angleDeg = -135f + percent * 270f
+    val latestValue by rememberUpdatedState(value)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
         Box(
             modifier = Modifier
                 .size(56.dp)
+                .shadow(6.dp, CircleShape, ambientColor = Color.Black.copy(alpha = 0.35f), spotColor = Color.Black.copy(alpha = 0.35f))
                 .clip(CircleShape)
+                .background(LocalPeach.current.soft)
                 .background(
                     Brush.verticalGradient(
-                        listOf(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), Color.Transparent)
+                        listOf(Color.White.copy(alpha = 0.10f), Color.Transparent)
                     )
                 )
                 .semantics { contentDescription = "$label knob, ${formatKnobValue(value)}$unit" }
                 .pointerInput(min, max) {
                     detectDragGestures { change, dragAmount ->
                         val sensitivity = (max - min) / 200f
-                        val newValue = value - dragAmount.y * sensitivity
+                        val newValue = latestValue - dragAmount.y * sensitivity
                         onChange(newValue.coerceIn(min, max))
                     }
                 },
@@ -143,7 +183,7 @@ fun EqKnob(
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(LocalPeach.current.card)
             )
             Box(
                 modifier = Modifier

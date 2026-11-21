@@ -1,5 +1,6 @@
 package com.smarteq.pro.ui.equalizer
 
+import com.smarteq.pro.ui.components.LiquidCard
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -84,9 +85,9 @@ fun EqualizerScreen(
         )
 
         // 15/10/5-band Equalizer Sliders
-        Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        LiquidCard(
             shape = RoundedCornerShape(28.dp),
+            variant = 1,
             modifier = Modifier.testTag("equalizer_bands_card"),
         ) {
             Column(Modifier.padding(20.dp)) {
@@ -99,7 +100,7 @@ fun EqualizerScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         listOf(BandCount.FIVE, BandCount.TEN, BandCount.FIFTEEN).forEach { count ->
                             FilterChip(
-                                selected = state.eq.bandCount == count,
+                                elevation = androidx.compose.material3.FilterChipDefaults.filterChipElevation(elevation = 2.dp), selected = state.eq.bandCount == count,
                                 onClick = { viewModel.setBandCount(count) },
                                 label = { Text(count.count.toString()) },
                                 modifier = Modifier
@@ -131,7 +132,7 @@ fun EqualizerScreen(
                             min = -12f,
                             max = 12f,
                             label = labels.getOrElse(i) { "" },
-                            color = bandColor(i, state.eq.bandCount.count),
+                            color = bandColor(i, state.eq.bandCount.count, com.smarteq.pro.ui.theme.LocalPeach.current.isDark),
                             onChange = { viewModel.setBandGain(i, it) },
                             modifier = Modifier.testTag("fader_band_$i"),
                         )
@@ -157,9 +158,9 @@ private fun AudioOutputDeviceCard(
     lowLatencyActive: Boolean,
     onToggleLowLatency: (Boolean) -> Unit,
 ) {
-    Card(
+    LiquidCard(
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+        variant = 0,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(Modifier.padding(16.dp)) {
@@ -235,7 +236,7 @@ private fun AudioOutputDeviceCard(
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Text(
-                            text = if (lowLatencyActive) "⚡ Fast buffer active (<3ms filter latency)" else "Standard filter buffer",
+                            text = if (lowLatencyActive) "Faster, coarser processing. Doesn't change Bluetooth's own delay." else "Standard processing (best sound)",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -260,7 +261,7 @@ private fun EngineStatusCard(
     onSetMode: (EqEngineMode) -> Unit,
     onHelp: () -> Unit,
 ) {
-    Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    LiquidCard(shape = RoundedCornerShape(24.dp)) {
         Column(Modifier.padding(20.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -300,21 +301,21 @@ private fun EngineStatusCard(
                     .horizontalScroll(rememberScrollState()),
             ) {
                 FilterChip(
-                    selected = mode == EqEngineMode.UNIVERSAL_GLOBAL,
+                    elevation = androidx.compose.material3.FilterChipDefaults.filterChipElevation(elevation = 2.dp), selected = mode == EqEngineMode.UNIVERSAL_GLOBAL,
                     onClick = { onSetMode(EqEngineMode.UNIVERSAL_GLOBAL) },
                     label = { Text(stringResource(R.string.eq_mode_universal)) },
                     modifier = Modifier.testTag("mode_chip_universal"),
                 )
                 Spacer(Modifier.width(8.dp))
                 FilterChip(
-                    selected = mode == EqEngineMode.DEFAULT_PER_SESSION,
+                    elevation = androidx.compose.material3.FilterChipDefaults.filterChipElevation(elevation = 2.dp), selected = mode == EqEngineMode.DEFAULT_PER_SESSION,
                     onClick = { onSetMode(EqEngineMode.DEFAULT_PER_SESSION) },
                     label = { Text(stringResource(R.string.eq_mode_default)) },
                     modifier = Modifier.testTag("mode_chip_default"),
                 )
                 Spacer(Modifier.width(8.dp))
                 FilterChip(
-                    selected = mode == EqEngineMode.LEGACY_GLOBAL,
+                    elevation = androidx.compose.material3.FilterChipDefaults.filterChipElevation(elevation = 2.dp), selected = mode == EqEngineMode.LEGACY_GLOBAL,
                     onClick = { onSetMode(EqEngineMode.LEGACY_GLOBAL) },
                     label = { Text(stringResource(R.string.eq_mode_legacy)) },
                     modifier = Modifier.testTag("mode_chip_legacy"),
@@ -346,7 +347,7 @@ private fun DynamicsCard(
     onOutputTrimChange: (Float) -> Unit,
     onHelp: () -> Unit,
 ) {
-    Card(shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    LiquidCard(shape = RoundedCornerShape(28.dp)) {
         Column(Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Dynamics & Tone", style = MaterialTheme.typography.titleMedium)

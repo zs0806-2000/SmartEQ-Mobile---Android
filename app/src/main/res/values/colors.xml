@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand gradient anchors, carried over from the original web app -->
-    <color name="brand_pink">#EC4899</color>
-    <color name="brand_purple">#A855F7</color>
-    <color name="brand_teal">#06B6D4</color>
-
-    <color name="surface_deepest">#0B0914</color>
-    <color name="surface_panel">#1A1525</color>
-    <color name="surface_panel_alt">#13101E</color>
-
-    <color name="on_surface_primary">#E5E5E5</color>
-    <color name="on_surface_secondary">#9CA3AF</color>
-
+    <!-- Keep in step with ui/theme/Color.kt (Peach Pulse). Used before Compose draws:
+         window background, splash, and the system bars. -->
+    <color name="surface_deepest">#141113</color>
+    <color name="surface_light">#FBF5F2</color>
+    <color name="brand_peach">#FFB599</color>
     <color name="spotify_green">#1DB954</color>
 </resources>

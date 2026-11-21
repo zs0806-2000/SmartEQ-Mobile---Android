@@ -11,8 +11,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Optional, asked only when the user turns on "Analyse the sound" in adaptive tuning.
+         Android requires it for the Visualizer effect; the microphone itself is never opened. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
     <application
         android:name=".SmartEqApplication"
@@ -52,7 +54,7 @@
         <service
             android:name=".service.EqualizerForegroundService"
             android:exported="false"
-            android:foregroundServiceType="specialUse">
+            android:foregroundServiceType="specialUse|microphone">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Applies real-time equalizer, dynamics, and low-latency Bluetooth DSP processing system-wide to all audio outputs." />
@@ -67,6 +69,18 @@
                 <action android:name="android.media.action.CLOSE_AUDIO_EFFECT_CONTROL_SESSION" />
             </intent-filter>
         </receiver>
+
+        <!-- Optional: reads only what is playing (title/artist/app) from media sessions, for
+             adaptive tuning. Runs only if the user grants notification access. -->
+        <service
+            android:name=".service.NowPlayingListenerService"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
 
         <!-- Optional: restarts the EQ engine after boot if enabled in Settings -->
         <receiver

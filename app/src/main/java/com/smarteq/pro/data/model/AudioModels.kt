@@ -42,11 +42,12 @@ object BandFrequencies {
 data class DynamicsSettings(
     val bassDb: Float = 0f,
     val trebleDb: Float = 0f,
-    val compThresholdDb: Float = -24f,
-    val compRatio: Float = 12f,
-    val compAttackSec: Float = 0.003f,
-    val compReleaseSec: Float = 0.25f,
-    val compKneeDb: Float = 30f,
+    // Compressor defaults to OFF (ratio 1:1). It is an opt-in effect, not part of a neutral sound.
+    val compThresholdDb: Float = -18f,
+    val compRatio: Float = 1f,
+    val compAttackSec: Float = 0.010f,
+    val compReleaseSec: Float = 0.20f,
+    val compKneeDb: Float = 6f,
 ) {
     companion object {
         val DEFAULT = DynamicsSettings()
@@ -72,7 +73,7 @@ object BuiltInPresets {
         name = "Flat / Reference",
         bandCount = 15,
         bandGainsDb = List(15) { 0f },
-        dynamics = DynamicsSettings(bassDb = 0f, trebleDb = 0f, compThresholdDb = -24f, compRatio = 12f, compAttackSec = 0.003f, compReleaseSec = 0.25f, compKneeDb = 30f),
+        dynamics = DynamicsSettings.DEFAULT,
         isBuiltIn = true
     )
     val ROCK = EqPreset(
@@ -143,7 +144,6 @@ data class AudioOutputDevice(
     val type: AudioOutputDeviceType = AudioOutputDeviceType.BUILTIN_SPEAKER,
     val isBluetooth: Boolean = false,
     val isLowLatencyActive: Boolean = false,
-    val estimatedLatencyMs: Int = 5,
 )
 
 @Serializable
@@ -208,6 +208,7 @@ data class EqEngineStatus(
     val activeSessions: List<ActiveAudioSession> = emptyList(),
     val currentOutputDevice: AudioOutputDevice = AudioOutputDevice(),
     val isLowLatencyActive: Boolean = false,
+    val usingFallbackEqualizer: Boolean = false,
 )
 
 data class ActiveAudioSession(

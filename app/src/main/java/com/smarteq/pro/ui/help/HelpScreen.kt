@@ -1,5 +1,6 @@
 package com.smarteq.pro.ui.help
 
+import com.smarteq.pro.ui.components.LiquidCard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,8 @@ import com.smarteq.pro.R
 private data class HelpEntry(val titleRes: Int, val bodyRes: Int)
 
 private val HELP_ENTRIES = mapOf(
+    "appearance" to HelpEntry(R.string.help_appearance_title, R.string.help_appearance_body),
+    "adaptive" to HelpEntry(R.string.help_adaptive_title, R.string.help_adaptive_body),
     "eq_mode" to HelpEntry(R.string.help_eq_mode_title, R.string.help_eq_mode_body),
     "gemini" to HelpEntry(R.string.help_gemini_title, R.string.help_gemini_body),
     "spotify" to HelpEntry(R.string.help_spotify_title, R.string.help_spotify_body),
@@ -66,7 +69,7 @@ fun HelpScreen(topic: String?, onBack: () -> Unit) {
                 else listOfNotNull(HELP_ENTRIES[topic])
 
             entries.forEach { entry ->
-                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                LiquidCard(shape = RoundedCornerShape(22.dp)) {
                     Column(Modifier.padding(20.dp)) {
                         Text(stringResource(entry.titleRes), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
                         Spacer(Modifier.height(8.dp))

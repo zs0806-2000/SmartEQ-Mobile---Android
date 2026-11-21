@@ -3,6 +3,7 @@ package com.smarteq.pro.data.repository
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -33,6 +34,50 @@ class SettingsRepository(
         val GEMINI_MODEL_OVERRIDE = stringPreferencesKey("gemini_model_override")
         val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
         val BLUETOOTH_LOW_LATENCY = booleanPreferencesKey("bluetooth_low_latency")
+        val ADAPTIVE_ENABLED = booleanPreferencesKey("adaptive_enabled")
+        val ADAPTIVE_USE_TRACK_INFO = booleanPreferencesKey("adaptive_use_track_info")
+        val ADAPTIVE_LISTEN = booleanPreferencesKey("adaptive_listen")
+        val ADAPTIVE_STRENGTH = floatPreferencesKey("adaptive_strength")
+        val ADAPTIVE_LOUDNESS = booleanPreferencesKey("adaptive_loudness")
+        val ADAPTIVE_PROFILES = stringPreferencesKey("adaptive_profiles_json")
+        val APP_FONT = stringPreferencesKey("app_font")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
+    }
+
+    // ---- Appearance ----
+    /** Font id from ui.theme.AppFont; null means the default. */
+    val appFontId: Flow<String?> = context.dataStore.data.map { it[Keys.APP_FONT] }
+    suspend fun setAppFontId(id: String) { context.dataStore.edit { it[Keys.APP_FONT] = id } }
+
+    /** "system", "dark" or "light" (ui.theme.ThemeMode). */
+    val themeModeId: Flow<String?> = context.dataStore.data.map { it[Keys.THEME_MODE] }
+    suspend fun setThemeModeId(id: String) { context.dataStore.edit { it[Keys.THEME_MODE] = id } }
+
+    // ---- Adaptive per-track tuning. Everything is off until the user turns it on. ----
+
+    val adaptiveEnabled: Flow<Boolean> = context.dataStore.data.map { it[Keys.ADAPTIVE_ENABLED] ?: false }
+    suspend fun setAdaptiveEnabled(v: Boolean) { context.dataStore.edit { it[Keys.ADAPTIVE_ENABLED] = v } }
+
+    /** Use the playing track's title/artist (needs notification access). */
+    val adaptiveUseTrackInfo: Flow<Boolean> = context.dataStore.data.map { it[Keys.ADAPTIVE_USE_TRACK_INFO] ?: false }
+    suspend fun setAdaptiveUseTrackInfo(v: Boolean) { context.dataStore.edit { it[Keys.ADAPTIVE_USE_TRACK_INFO] = v } }
+
+    /** Analyse the sound itself (needs the Microphone permission for Android's Visualizer). */
+    val adaptiveListen: Flow<Boolean> = context.dataStore.data.map { it[Keys.ADAPTIVE_LISTEN] ?: false }
+    suspend fun setAdaptiveListen(v: Boolean) { context.dataStore.edit { it[Keys.ADAPTIVE_LISTEN] = v } }
+
+    /** 0..1, how strongly corrections are applied. */
+    val adaptiveStrength: Flow<Float> = context.dataStore.data.map { it[Keys.ADAPTIVE_STRENGTH] ?: 0.6f }
+    suspend fun setAdaptiveStrength(v: Float) { context.dataStore.edit { it[Keys.ADAPTIVE_STRENGTH] = v.coerceIn(0f, 1f) } }
+
+    /** Even out loudness between songs. Off by default (experimental). */
+    val adaptiveLoudness: Flow<Boolean> = context.dataStore.data.map { it[Keys.ADAPTIVE_LOUDNESS] ?: false }
+    suspend fun setAdaptiveLoudness(v: Boolean) { context.dataStore.edit { it[Keys.ADAPTIVE_LOUDNESS] = v } }
+
+    /** Learned tonal-balance targets per output device, as JSON. Stays on this device. */
+    val adaptiveProfilesJson: Flow<String?> = context.dataStore.data.map { it[Keys.ADAPTIVE_PROFILES] }
+    suspend fun setAdaptiveProfilesJson(json: String?) {
+        context.dataStore.edit { if (json == null) it.remove(Keys.ADAPTIVE_PROFILES) else it[Keys.ADAPTIVE_PROFILES] = json }
     }
 
     val eqEngineMode: Flow<EqEngineMode> = context.dataStore.data.map {
@@ -48,7 +93,7 @@ class SettingsRepository(
         context.dataStore.edit { it[Keys.EQ_ENGINE_ENABLED] = enabled }
     }
 
-    val bluetoothLowLatencyEnabled: Flow<Boolean> = context.dataStore.data.map { it[Keys.BLUETOOTH_LOW_LATENCY] ?: true }
+    val bluetoothLowLatencyEnabled: Flow<Boolean> = context.dataStore.data.map { it[Keys.BLUETOOTH_LOW_LATENCY] ?: false }
     suspend fun setBluetoothLowLatencyEnabled(enabled: Boolean) {
         context.dataStore.edit { it[Keys.BLUETOOTH_LOW_LATENCY] = enabled }
     }

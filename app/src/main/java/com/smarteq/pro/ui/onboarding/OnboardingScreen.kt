@@ -1,5 +1,6 @@
 package com.smarteq.pro.ui.onboarding
 
+import com.smarteq.pro.ui.components.LiquidCard
 import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -64,7 +65,7 @@ fun OnboardingScreen(onFinished: () -> Unit) {
         Spacer(Modifier.height(32.dp))
 
         Button(
-            onClick = {
+            elevation = androidx.compose.material3.ButtonDefaults.buttonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 } else {
@@ -78,7 +79,7 @@ fun OnboardingScreen(onFinished: () -> Unit) {
 
 @Composable
 private fun OnboardingItem(icon: ImageVector, title: String, body: String) {
-    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    LiquidCard(shape = RoundedCornerShape(22.dp)) {
         androidx.compose.foundation.layout.Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
             Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
             Spacer(Modifier.height(0.dp))

@@ -1,6 +1,8 @@
 package com.smarteq.pro.di
 
 import android.content.Context
+import com.smarteq.pro.audio.adaptive.AdaptiveTuner
+import com.smarteq.pro.audio.adaptive.NowPlayingRepository
 import com.smarteq.pro.audio.engine.AudioRoutingManager
 import com.smarteq.pro.audio.engine.AudioSessionRegistry
 import com.smarteq.pro.audio.engine.EqStateStore
@@ -38,6 +40,8 @@ interface AppContainer {
     val artistTuningRepository: ArtistTuningRepository
     val appLockManager: AppLockManager
     val localMediaMetadataReader: LocalMediaMetadataReader
+    val nowPlayingRepository: NowPlayingRepository
+    val adaptiveTuner: AdaptiveTuner
 }
 
 class DefaultAppContainer(
@@ -82,7 +86,7 @@ class DefaultAppContainer(
 
     private val okHttpClient: OkHttpClient by lazy {
         val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
+            level = HttpLoggingInterceptor.Level.NONE
         }
         OkHttpClient.Builder()
             .addInterceptor(logging)
@@ -132,5 +136,11 @@ class DefaultAppContainer(
 
     override val localMediaMetadataReader: LocalMediaMetadataReader by lazy {
         LocalMediaMetadataReader(appContext)
+    }
+
+    override val nowPlayingRepository: NowPlayingRepository by lazy { NowPlayingRepository() }
+
+    override val adaptiveTuner: AdaptiveTuner by lazy {
+        AdaptiveTuner(appContext, settingsRepository, nowPlayingRepository, sessionRegistry, eqStateStore, audioRoutingManager)
     }
 }

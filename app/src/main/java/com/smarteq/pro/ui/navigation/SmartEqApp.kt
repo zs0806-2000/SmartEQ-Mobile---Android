@@ -1,5 +1,8 @@
 package com.smarteq.pro.ui.navigation
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.unit.dp
+import com.smarteq.pro.ui.components.liquidBackground
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -89,7 +92,11 @@ private fun MainScaffold(
         bottomBar = {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = backStackEntry?.destination
-            NavigationBar(modifier = Modifier.testTag("bottom_nav_bar")) {
+            NavigationBar(
+                modifier = Modifier.testTag("bottom_nav_bar").liquidBackground(variant = 2),
+                containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                tonalElevation = 0.dp,
+            ) {
                 bottomNavDestinations.forEach { destination ->
                     val selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true
                     NavigationBarItem(
@@ -104,6 +111,11 @@ private fun MainScaffold(
                         icon = { Icon(destination.icon, contentDescription = destination.label) },
                         label = { Text(destination.label) },
                         modifier = Modifier.testTag(destination.testTag),
+                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                        ),
                     )
                 }
             }

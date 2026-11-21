@@ -1,5 +1,6 @@
 package com.smarteq.pro.ui.autotune
 
+import com.smarteq.pro.ui.components.LiquidCard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -47,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.smarteq.pro.R
 import com.smarteq.pro.data.model.AutoEqProfile
 
@@ -58,6 +60,12 @@ fun AutoTuneScreen(
     viewModel: AutoTuneViewModel,
 ) {
     val state by viewModel.uiState.collectAsState()
+    val adaptive by viewModel.adaptiveState.collectAsState()
+    // Permissions can change in system settings while we are away; re-check on every return.
+    LifecycleResumeEffect(Unit) {
+        viewModel.refreshAccess()
+        onPauseOrDispose { }
+    }
     var manualArtist by remember { mutableStateOf("") }
     var manualTrack by remember { mutableStateOf("") }
 
@@ -77,7 +85,18 @@ fun AutoTuneScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Card(shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        AdaptiveTuningCard(
+            state = adaptive,
+            onEnabled = viewModel::setAdaptiveEnabled,
+            onUseTrackInfo = viewModel::setAdaptiveUseTrackInfo,
+            onListen = viewModel::setAdaptiveListen,
+            onStrength = viewModel::setAdaptiveStrength,
+            onLoudness = viewModel::setAdaptiveLoudness,
+            onResetLearning = viewModel::resetAdaptiveLearning,
+            onHelp = { onNavigateToHelp("adaptive") },
+        )
+
+        LiquidCard(shape = RoundedCornerShape(28.dp)) {
             Column(Modifier.padding(20.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -110,7 +129,7 @@ fun AutoTuneScreen(
                 Spacer(Modifier.height(16.dp))
 
                 // Current track card
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                LiquidCard(shape = RoundedCornerShape(22.dp), inset = true) {
                     Column(Modifier.padding(16.dp)) {
                         val track = state.currentTrack
                         if (track != null) {
@@ -152,7 +171,7 @@ fun AutoTuneScreen(
                 )
                 Spacer(Modifier.height(8.dp))
                 FilledTonalButton(
-                    onClick = { viewModel.setManualArtist(manualArtist.trim(), manualTrack.trim().ifBlank { null }) },
+                    elevation = androidx.compose.material3.ButtonDefaults.filledTonalButtonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { viewModel.setManualArtist(manualArtist.trim(), manualTrack.trim().ifBlank { null }) },
                     enabled = manualArtist.isNotBlank(),
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text("Set Active Artist") }
@@ -175,7 +194,7 @@ fun AutoTuneScreen(
         )
 
         FilledTonalButton(
-            onClick = { viewModel.triggerAutoTune() },
+            elevation = androidx.compose.material3.ButtonDefaults.filledTonalButtonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { viewModel.triggerAutoTune() },
             enabled = !state.isTuning,
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -191,7 +210,7 @@ fun AutoTuneScreen(
         }
 
         state.activeResult?.let { result ->
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+            LiquidCard(shape = RoundedCornerShape(22.dp), inset = true) {
                 Column(Modifier.padding(16.dp)) {
                     Text("Active Profile: ${result.artist} → ${result.outputDeviceName}", style = MaterialTheme.typography.titleMedium)
                     Spacer(Modifier.height(4.dp))
@@ -217,7 +236,7 @@ private fun AutoEqProfileCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Card(shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    LiquidCard(shape = RoundedCornerShape(28.dp)) {
         Column(Modifier.padding(20.dp)) {
             Text("Audio Output Source (AutoEQ)", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
