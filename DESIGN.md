@@ -3,6 +3,7 @@
 Status: **approved 2026-11-21**. Platform: Android (Jetpack Compose, Material 3).
 Source of truth in code: `app/src/main/java/com/smarteq/pro/ui/theme/` and `ui/components/LiquidCard.kt`.
 If this file and the code disagree, the code wins. Fix this file.
+Visual reference: the **Brand (approved)** page of the design canvas, https://claude.ai/artifact/Kv6rVftbArsFAgaTZghhse. It shows the icon, wordmark, colours, the 8 fonts and the card and control styles on one sheet. The exploration boards on the other pages are history; the approved ones are marked ✓.
 
 ---
 
