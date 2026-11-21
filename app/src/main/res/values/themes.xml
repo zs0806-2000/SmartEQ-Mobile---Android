@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme is Compose-driven (see ui/theme/Theme.kt);
-         this XML theme only covers the pre-Compose window/splash state. -->
-    <style name="Theme.SmartEQPro" parent="android:Theme.Material.NoActionBar">
-        <item name="android:statusBarColor">@color/surface_deepest</item>
-        <item name="android:navigationBarColor">@color/surface_deepest</item>
-        <item name="android:windowBackground">@color/surface_deepest</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
+    <!-- Compose draws the real theme (ui/theme/Theme.kt). This only colours the window
+         before the first frame, matching the phone's light/dark setting. -->
+    <style name="Theme.SmartEQPro" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/surface_light</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
     </style>
 
     <style name="Theme.SmartEQPro.Splash" parent="Theme.SmartEQPro" />

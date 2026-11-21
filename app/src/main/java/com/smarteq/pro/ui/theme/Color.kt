@@ -1,39 +1,60 @@
 package com.smarteq.pro.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 
-// Brand anchors, carried over from the web app's gradient identity
-val BrandPink = Color(0xFFEC4899)
-val BrandPurple = Color(0xFFA855F7)
-val BrandTeal = Color(0xFF06B6D4)
+/*
+ * "Peach Pulse" palette, approved on the design canvas (2026-11-21).
+ * Structure follows a neutral-surfaces + one-accent + harmonising-accents system.
+ * Keep res/values/colors.xml (window/splash background) in step with BgDark / BgLight.
+ */
 
-val SurfaceDeepest = Color(0xFF0B0914)
-val SurfacePanel = Color(0xFF1A1525)
-val SurfacePanelAlt = Color(0xFF13101E)
-val SurfaceContainerHigh = Color(0xFF221C33)
+// Brand accent and its harmonising colours (peach -> blush -> lilac, plus butter).
+val Peach = Color(0xFFFFB599)
+val Blush = Color(0xFFF7B7C6)
+val Lilac = Color(0xFFCDB9F2)
+val Butter = Color(0xFFFFD8A8)
 
-val OnSurfacePrimary = Color(0xFFE5E5E5)
-val OnSurfaceSecondary = Color(0xFF9CA3AF)
+/** Deeper peach for fills (sliders, switches) on light surfaces: 3:1 or better on white. */
+val PeachDeep = Color(0xFFD9714A)
 
+/** Light-mode primary (button fills): white text on it passes 4.5:1. */
+val PeachInk = Color(0xFFB5532C)
+
+// Dark mode
+val BgDark = Color(0xFF141113)
+val CardDark = Color(0xFF1E191C)
+val SoftDark = Color(0xFF2A2327)
+val LineDark = Color(0xFF3A3136)
+val InkDark = Color(0xFFFBF4F1)
+val Ink2Dark = Color(0xFFD2C4C0)
+val MutedDark = Color(0xFFBFB2AE)
+val TintDark = Color(0xFF3D2820)
+val AccentTextDark = Color(0xFFFFC4AC)
+val OnPeach = Color(0xFF2A140C)
+
+// Light mode
+val BgLight = Color(0xFFFBF5F2)
+val CardLight = Color(0xFFFFFFFF)
+val SoftLight = Color(0xFFF3E8E3)
+val LineLight = Color(0xFFE9DBD5)
+val InkLight = Color(0xFF1E1517)
+val Ink2Light = Color(0xFF54474A)
+val MutedLight = Color(0xFF75666A)
+val TintLight = Color(0xFFFFE6DB)
+val AccentTextLight = Color(0xFF9C4527)
+
+// Status colours
+val ErrorDark = Color(0xFFFF8A80)
+val ErrorLight = Color(0xFFB3261E)
 val SpotifyGreen = Color(0xFF1DB954)
-val WarningAmber = Color(0xFFF59E0B)
-val ErrorRed = Color(0xFFEF4444)
-val SuccessGreen = Color(0xFF22C55E)
 
-/** Per-band gradient across pink -> purple -> teal, matching getBandColor() in App.tsx. */
-fun bandColor(index: Int, total: Int): Color {
-    val percent = if (total <= 1) 0f else index.toFloat() / (total - 1)
-    val (c1, c2, p) = if (percent < 0.5f) {
-        Triple(BrandPink, BrandPurple, percent * 2f)
-    } else {
-        Triple(BrandPurple, BrandTeal, (percent - 0.5f) * 2f)
-    }
-    return lerpColor(c1, c2, p)
+/**
+ * Fader colour for band [index] of [total]: a blend across peach -> blush -> lilac
+ * in dark mode; the single deeper peach in light mode (pastels vanish on white).
+ */
+fun bandColor(index: Int, total: Int, dark: Boolean = true): Color {
+    if (!dark) return PeachDeep
+    val x = if (total <= 1) 0f else index.toFloat() / (total - 1)
+    return if (x < 0.5f) lerp(Peach, Blush, x * 2f) else lerp(Blush, Lilac, (x - 0.5f) * 2f)
 }
-
-private fun lerpColor(a: Color, b: Color, t: Float): Color = Color(
-    red = a.red + (b.red - a.red) * t,
-    green = a.green + (b.green - a.green) * t,
-    blue = a.blue + (b.blue - a.blue) * t,
-    alpha = 1f,
-)

@@ -34,8 +34,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.smarteq.pro.R
 import com.smarteq.pro.data.repository.SettingsRepository
-import com.smarteq.pro.ui.theme.BrandPurple
-import com.smarteq.pro.ui.theme.BrandTeal
+import com.smarteq.pro.ui.theme.Blush
+import com.smarteq.pro.ui.theme.Lilac
+import com.smarteq.pro.ui.theme.Peach
 
 @Composable
 fun LockScreen(
@@ -74,11 +75,11 @@ fun LockScreen(
             modifier = Modifier
                 .size(88.dp)
                 .clip(CircleShape)
-                .background(Brush.linearGradient(listOf(BrandPurple, BrandTeal))),
+                .background(Brush.linearGradient(listOf(Peach, Blush, Lilac))),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Icon(Icons.Default.Fingerprint, contentDescription = null, tint = MaterialTheme.colorScheme.background, modifier = Modifier.size(44.dp))
+            Icon(Icons.Default.Fingerprint, contentDescription = null, tint = com.smarteq.pro.ui.theme.OnPeach, modifier = Modifier.size(44.dp))
         }
 
         Spacer(Modifier.height(24.dp))
@@ -105,7 +106,7 @@ fun LockScreen(
                 Text("Incorrect PIN", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
             }
             Spacer(Modifier.height(16.dp))
-            Button(onClick = {
+            Button(elevation = androidx.compose.material3.ButtonDefaults.buttonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = {
                 if (appLockManager.verifyPin(pinInput)) {
                     appLockManager.unlock()
                 } else {
@@ -113,7 +114,7 @@ fun LockScreen(
                 }
             }) { Text(stringResource(R.string.lock_unlock_button)) }
         } else {
-            Button(onClick = { tryBiometric() }) {
+            Button(elevation = androidx.compose.material3.ButtonDefaults.buttonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { tryBiometric() }) {
                 Icon(Icons.Default.Fingerprint, contentDescription = null, modifier = Modifier.size(18.dp))
                 Text("  " + stringResource(R.string.lock_unlock_button))
             }

@@ -40,7 +40,18 @@ class SettingsRepository(
         val ADAPTIVE_STRENGTH = floatPreferencesKey("adaptive_strength")
         val ADAPTIVE_LOUDNESS = booleanPreferencesKey("adaptive_loudness")
         val ADAPTIVE_PROFILES = stringPreferencesKey("adaptive_profiles_json")
+        val APP_FONT = stringPreferencesKey("app_font")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
     }
+
+    // ---- Appearance ----
+    /** Font id from ui.theme.AppFont; null means the default. */
+    val appFontId: Flow<String?> = context.dataStore.data.map { it[Keys.APP_FONT] }
+    suspend fun setAppFontId(id: String) { context.dataStore.edit { it[Keys.APP_FONT] = id } }
+
+    /** "system", "dark" or "light" (ui.theme.ThemeMode). */
+    val themeModeId: Flow<String?> = context.dataStore.data.map { it[Keys.THEME_MODE] }
+    suspend fun setThemeModeId(id: String) { context.dataStore.edit { it[Keys.THEME_MODE] = id } }
 
     // ---- Adaptive per-track tuning. Everything is off until the user turns it on. ----
 

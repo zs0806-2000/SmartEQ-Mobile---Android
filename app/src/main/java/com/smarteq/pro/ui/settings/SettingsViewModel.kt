@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import com.smarteq.pro.ui.theme.AppFont
+import com.smarteq.pro.ui.theme.ThemeMode
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -68,6 +71,19 @@ class SettingsViewModel(
             appLockPinConfigured = secureKeyStore.getAppLockPinHash() != null,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsUiState())
+
+    val appFont: StateFlow<AppFont> = settingsRepository.appFontId.map { AppFont.fromId(it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppFont.DEFAULT)
+    val themeMode: StateFlow<ThemeMode> = settingsRepository.themeModeId.map { ThemeMode.fromId(it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ThemeMode.SYSTEM)
+
+    fun setAppFont(font: AppFont) {
+        viewModelScope.launch { settingsRepository.setAppFontId(font.id) }
+    }
+
+    fun setThemeMode(mode: ThemeMode) {
+        viewModelScope.launch { settingsRepository.setThemeModeId(mode.id) }
+    }
 
     private data class ToggleGroup(
         val geminiOn: Boolean,

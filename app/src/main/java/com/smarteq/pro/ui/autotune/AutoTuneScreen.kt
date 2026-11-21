@@ -1,5 +1,6 @@
 package com.smarteq.pro.ui.autotune
 
+import com.smarteq.pro.ui.components.LiquidCard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -95,7 +96,7 @@ fun AutoTuneScreen(
             onHelp = { onNavigateToHelp("adaptive") },
         )
 
-        Card(shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        LiquidCard(shape = RoundedCornerShape(28.dp)) {
             Column(Modifier.padding(20.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -128,7 +129,7 @@ fun AutoTuneScreen(
                 Spacer(Modifier.height(16.dp))
 
                 // Current track card
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                LiquidCard(shape = RoundedCornerShape(22.dp), inset = true) {
                     Column(Modifier.padding(16.dp)) {
                         val track = state.currentTrack
                         if (track != null) {
@@ -170,7 +171,7 @@ fun AutoTuneScreen(
                 )
                 Spacer(Modifier.height(8.dp))
                 FilledTonalButton(
-                    onClick = { viewModel.setManualArtist(manualArtist.trim(), manualTrack.trim().ifBlank { null }) },
+                    elevation = androidx.compose.material3.ButtonDefaults.filledTonalButtonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { viewModel.setManualArtist(manualArtist.trim(), manualTrack.trim().ifBlank { null }) },
                     enabled = manualArtist.isNotBlank(),
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text("Set Active Artist") }
@@ -193,7 +194,7 @@ fun AutoTuneScreen(
         )
 
         FilledTonalButton(
-            onClick = { viewModel.triggerAutoTune() },
+            elevation = androidx.compose.material3.ButtonDefaults.filledTonalButtonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { viewModel.triggerAutoTune() },
             enabled = !state.isTuning,
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -209,7 +210,7 @@ fun AutoTuneScreen(
         }
 
         state.activeResult?.let { result ->
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+            LiquidCard(shape = RoundedCornerShape(22.dp), inset = true) {
                 Column(Modifier.padding(16.dp)) {
                     Text("Active Profile: ${result.artist} → ${result.outputDeviceName}", style = MaterialTheme.typography.titleMedium)
                     Spacer(Modifier.height(4.dp))
@@ -235,7 +236,7 @@ private fun AutoEqProfileCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Card(shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    LiquidCard(shape = RoundedCornerShape(28.dp)) {
         Column(Modifier.padding(20.dp)) {
             Text("Audio Output Source (AutoEQ)", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))

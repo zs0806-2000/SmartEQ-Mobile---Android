@@ -1,6 +1,17 @@
 package com.smarteq.pro.ui.settings
 
+import com.smarteq.pro.ui.components.LiquidCard
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.sp
+import com.smarteq.pro.ui.theme.AppFont
+import com.smarteq.pro.ui.theme.ThemeMode
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -71,6 +82,10 @@ fun SettingsScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        SettingsSection(title = "Appearance") {
+            AppearanceBlock(viewModel, onHelp = { onNavigateToHelp("appearance") })
+        }
+
         SettingsSection(title = stringResource(R.string.settings_section_connections)) {
             GeminiSettingsBlock(state, viewModel, onHelp = { onNavigateToHelp("gemini") })
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
@@ -115,7 +130,7 @@ fun SettingsScreen(
 
 @Composable
 private fun SettingsSection(title: String, content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit) {
-    Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    LiquidCard(shape = RoundedCornerShape(24.dp)) {
         Column(Modifier.padding(20.dp)) {
             Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(12.dp))
@@ -194,7 +209,7 @@ private fun GeminiSettingsBlock(state: SettingsUiState, viewModel: SettingsViewM
         )
         Spacer(Modifier.height(8.dp))
         FilledTonalButton(
-            onClick = { viewModel.setGeminiApiKey(keyInput); viewModel.setGeminiNetworkEnabled(true); keyInput = "" },
+            elevation = androidx.compose.material3.ButtonDefaults.filledTonalButtonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { viewModel.setGeminiApiKey(keyInput); viewModel.setGeminiNetworkEnabled(true); keyInput = "" },
             enabled = keyInput.isNotBlank(),
         ) { Text("Save key") }
     }
@@ -225,11 +240,11 @@ private fun SpotifySettingsBlock(state: SettingsUiState, viewModel: SettingsView
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(8.dp))
-        FilledTonalButton(onClick = { viewModel.setSpotifyClientId(clientIdInput) }, enabled = clientIdInput.isNotBlank()) {
+        FilledTonalButton(elevation = androidx.compose.material3.ButtonDefaults.filledTonalButtonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { viewModel.setSpotifyClientId(clientIdInput) }, enabled = clientIdInput.isNotBlank()) {
             Text("Save Client ID")
         }
     } else if (!state.spotifyConnected) {
-        FilledTonalButton(onClick = { viewModel.beginSpotifyLogin() }, modifier = Modifier.fillMaxWidth()) {
+        FilledTonalButton(elevation = androidx.compose.material3.ButtonDefaults.filledTonalButtonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { viewModel.beginSpotifyLogin() }, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.settings_spotify_connect))
         }
     } else {
@@ -295,7 +310,7 @@ private fun AppLockSettingsBlock(state: SettingsUiState, viewModel: SettingsView
         Row {
             listOf(0 to "Immediately", 60 to "1 min", 300 to "5 min").forEach { (seconds, label) ->
                 FilledTonalButton(
-                    onClick = { viewModel.setAppLockTimeoutSeconds(seconds) },
+                    elevation = androidx.compose.material3.ButtonDefaults.filledTonalButtonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp), onClick = { viewModel.setAppLockTimeoutSeconds(seconds) },
                     modifier = Modifier.padding(end = 8.dp),
                 ) { Text(label) }
             }
@@ -351,3 +366,60 @@ private fun SetPinDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
         dismissButton = { androidx.compose.material3.TextButton(onClick = onDismiss) { Text("Cancel") } },
     )
 }
+
+@Composable
+private fun AppearanceBlock(viewModel: SettingsViewModel, onHelp: () -> Unit) {
+    val font by viewModel.appFont.collectAsState()
+    val mode by viewModel.themeMode.collectAsState()
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text("Theme", style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+        IconButton(onClick = onHelp) {
+            Icon(Icons.Default.HelpOutline, contentDescription = "Help: appearance")
+        }
+    }
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        ThemeMode.entries.forEach { m ->
+            FilterChip(
+                elevation = FilterChipDefaults.filterChipElevation(elevation = 2.dp),
+                selected = m == mode,
+                onClick = { viewModel.setThemeMode(m) },
+                label = { Text(m.label) },
+            )
+        }
+    }
+
+    Spacer(Modifier.height(16.dp))
+    Text("Font", style = MaterialTheme.typography.titleSmall)
+    Text(
+        "All fonts are built into the app; switching never downloads anything.",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Spacer(Modifier.height(8.dp))
+    Column(Modifier.selectableGroup()) {
+        AppFont.entries.forEach { f ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp)
+                    .selectable(selected = f == font, role = Role.RadioButton, onClick = { viewModel.setAppFont(f) })
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RadioButton(selected = f == font, onClick = null)
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(f.label, fontFamily = f.heading, fontWeight = f.headingWeight, fontSize = 18.sp)
+                    Text(
+                        "Equalizer  +3.5 dB  1k  16k",
+                        fontFamily = f.body,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+    }
+}
+

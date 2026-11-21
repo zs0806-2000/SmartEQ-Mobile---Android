@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,8 +29,14 @@ class MainActivity : FragmentActivity() {
 
         handleIntent(intent)
 
+        val settings = app.container.settingsRepository
         setContent {
-            SmartEqTheme {
+            val fontId by settings.appFontId.collectAsState(initial = null)
+            val themeId by settings.themeModeId.collectAsState(initial = null)
+            SmartEqTheme(
+                themeMode = com.smarteq.pro.ui.theme.ThemeMode.fromId(themeId),
+                font = com.smarteq.pro.ui.theme.AppFont.fromId(fontId),
+            ) {
                 SmartEqApp(
                     appLockManager = appLockManager,
                     pendingSpotifyRedirect = pendingSpotifyRedirect,

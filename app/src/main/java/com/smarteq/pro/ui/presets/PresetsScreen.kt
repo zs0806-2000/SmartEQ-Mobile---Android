@@ -1,5 +1,6 @@
 package com.smarteq.pro.ui.presets
 
+import com.smarteq.pro.ui.components.LiquidCard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -115,11 +116,10 @@ private fun PresetRow(
     onClick: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    Card(
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isActive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
-        ),
+    LiquidCard(
+        shape = RoundedCornerShape(22.dp),
+        variant = 2,
+        selected = isActive,
         onClick = onClick,
     ) {
         Row(

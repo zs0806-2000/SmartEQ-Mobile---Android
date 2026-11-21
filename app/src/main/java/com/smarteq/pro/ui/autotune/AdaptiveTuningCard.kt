@@ -1,5 +1,6 @@
 package com.smarteq.pro.ui.autotune
 
+import com.smarteq.pro.ui.components.LiquidCard
 import android.Manifest
 import android.content.Intent
 import android.provider.Settings
@@ -66,7 +67,7 @@ fun AdaptiveTuningCard(
         onListen(granted)
     }
 
-    Card(shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    LiquidCard(shape = RoundedCornerShape(28.dp)) {
         Column(Modifier.padding(20.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.GraphicEq, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
