@@ -5,7 +5,13 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import com.smarteq.pro.ui.components.SmartyQWordmark
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,9 +48,15 @@ fun OnboardingScreen(onFinished: () -> Unit) {
             .padding(24.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-        Icon(Icons.Default.Tune, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.height(56.dp))
-        Spacer(Modifier.height(16.dp))
-        Text("Welcome to SmartyQ", style = MaterialTheme.typography.headlineMedium)
+        // App icon, built from the same two layers Android uses for the home-screen icon.
+        Box(Modifier.size(72.dp).clip(RoundedCornerShape(17.dp))) {
+            Image(painterResource(R.drawable.ic_launcher_background), contentDescription = null, modifier = Modifier.fillMaxSize())
+            Image(painterResource(R.drawable.ic_launcher_foreground), contentDescription = null, modifier = Modifier.fillMaxSize())
+        }
+        Spacer(Modifier.height(20.dp))
+        Text("Welcome to", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.height(6.dp))
+        SmartyQWordmark(height = 44.dp)
         Spacer(Modifier.height(8.dp))
         Text(stringResource(R.string.onboarding_permissions_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(24.dp))

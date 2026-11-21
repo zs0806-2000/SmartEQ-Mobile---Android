@@ -118,12 +118,17 @@ fun SettingsScreen(
 
         SettingsSection(title = stringResource(R.string.settings_section_about)) {
             SettingsHelpRow(title = "Help & feature guide", onClick = { onNavigateToHelp("index") })
-            Text(
-                "SmartyQ v1.0.0",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 8.dp),
-            )
+            androidx.compose.foundation.layout.Row(
+                modifier = Modifier.padding(top = 12.dp),
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            ) {
+                com.smarteq.pro.ui.components.SmartyQWordmark(height = 20.dp)
+                Text(
+                    "  v1.0.0",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }
