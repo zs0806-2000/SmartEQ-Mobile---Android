@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SmartEQ Pro app icon, concept T3 "Bands cut into the brain". Editable master.
+     Artboard 108 x 108 = Android adaptive-icon canvas. Keep the brain inside the
+     66-unit circle in the "Guides" layer so launchers never crop it.
+     Layers: Guides (hidden), Background, Brain (two hemispheres), Bands (the
+     negative-space EQ slots, applied as a mask; in Illustrator they import as an
+     opacity mask, or select Brain + Bands and use Pathfinder > Minus Front). -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 108 108">
+  <defs>
+    <linearGradient id="brain-gradient" gradientUnits="userSpaceOnUse" x1="30" y1="24" x2="80" y2="86">
+      <stop offset="0" stop-color="#FFB599"/>
+      <stop offset="0.55" stop-color="#F7B7C6"/>
+      <stop offset="1" stop-color="#CDB9F2"/>
+    </linearGradient>
+    <radialGradient id="background-glow" gradientUnits="userSpaceOnUse" cx="24" cy="20" r="80">
+      <stop offset="0" stop-color="#FFB599" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FFB599" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="bands-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="108" height="108">
+      <rect x="0" y="0" width="108" height="108" fill="#FFFFFF"/>
+      <g id="Bands">
+      <rect id="band-1" x="45.39" y="38.16" width="3.37" height="34.65" rx="1.68" fill="#000000"/>
+      <rect id="band-2" x="39.94" y="46.08" width="3.37" height="26.73" rx="1.68" fill="#000000"/>
+      <rect id="band-3" x="34.50" y="52.02" width="3.37" height="20.79" rx="1.68" fill="#000000"/>
+      <rect id="band-4" x="59.25" y="41.13" width="3.37" height="31.68" rx="1.68" fill="#000000"/>
+      <rect id="band-5" x="64.69" y="49.05" width="3.37" height="23.76" rx="1.68" fill="#000000"/>
+      <rect id="band-6" x="70.14" y="54.99" width="3.37" height="17.82" rx="1.68" fill="#000000"/>
+      </g>
+    </mask>
+  </defs>
+  <g id="Guides" display="none">
+    <circle cx="54" cy="54" r="33" fill="none" stroke="#00B3FF" stroke-width="0.3"/>
+  </g>
+  <g id="Background">
+    <rect width="108" height="108" fill="#141113"/>
+    <rect width="108" height="108" fill="url(#background-glow)"/>
+  </g>
+  <g id="Brain" mask="url(#bands-mask)" fill="url(#brain-gradient)">
+    <path id="hemisphere-left" d="M52.42,23.92 L50.80,23.91 L49.64,23.86 L48.56,23.81 L47.50,23.78 L46.42,23.81 L45.33,23.94 L44.24,24.19 L43.22,24.58 L42.30,25.12 L41.52,25.79 L40.88,26.57 L40.36,27.42 L39.91,28.31 L39.45,29.22 L38.91,30.10 L38.24,30.96 L37.42,31.79 L36.48,32.61 L35.48,33.42 L34.51,34.27 L33.66,35.17 L33.00,36.15 L32.58,37.21 L32.39,38.35 L32.36,39.57 L32.40,40.85 L32.39,42.17 L32.25,43.50 L31.90,44.84 L31.34,46.17 L30.62,47.48 L29.83,48.78 L29.09,50.07 L28.53,51.36 L28.23,52.67 L28.22,54.00 L28.49,55.35 L28.94,56.71 L29.47,58.08 L29.95,59.44 L30.27,60.77 L30.37,62.06 L30.25,63.30 L29.98,64.50 L29.65,65.65 L29.40,66.79 L29.33,67.91 L29.53,69.04 L30.02,70.19 L30.77,71.35 L31.69,72.54 L32.66,73.73 L33.59,74.89 L34.38,76.01 L35.00,77.05 L35.46,77.98 L35.83,78.80 L36.18,79.50 L36.62,80.08 L37.22,80.58 L38.02,81.01 L39.02,81.42 L40.19,81.83 L41.45,82.26 L42.75,82.73 L44.01,83.23 L45.22,83.73 L46.40,84.22 L47.58,84.66 L48.85,85.01 L50.32,85.23 L52.42,85.30 Z"/>
+    <path id="hemisphere-right" d="M55.58,23.92 L57.20,23.91 L58.36,23.86 L59.44,23.81 L60.50,23.78 L61.58,23.81 L62.67,23.94 L63.76,24.19 L64.78,24.58 L65.70,25.12 L66.48,25.79 L67.12,26.57 L67.64,27.42 L68.09,28.31 L68.55,29.22 L69.09,30.10 L69.76,30.96 L70.58,31.79 L71.52,32.61 L72.52,33.42 L73.49,34.27 L74.34,35.17 L75.00,36.15 L75.42,37.21 L75.61,38.35 L75.64,39.57 L75.60,40.85 L75.61,42.17 L75.75,43.50 L76.10,44.84 L76.66,46.17 L77.38,47.48 L78.17,48.78 L78.91,50.07 L79.47,51.36 L79.77,52.67 L79.78,54.00 L79.51,55.35 L79.06,56.71 L78.53,58.08 L78.05,59.44 L77.73,60.77 L77.63,62.06 L77.75,63.30 L78.02,64.50 L78.35,65.65 L78.60,66.79 L78.67,67.91 L78.47,69.04 L77.98,70.19 L77.23,71.35 L76.31,72.54 L75.34,73.73 L74.41,74.89 L73.62,76.01 L73.00,77.05 L72.54,77.98 L72.17,78.80 L71.82,79.50 L71.38,80.08 L70.78,80.58 L69.98,81.01 L68.98,81.42 L67.81,81.83 L66.55,82.26 L65.25,82.73 L63.99,83.23 L62.78,83.73 L61.60,84.22 L60.42,84.66 L59.15,85.01 L57.68,85.23 L55.58,85.30 Z"/>
+  </g>
+</svg>
